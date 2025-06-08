@@ -27,21 +27,6 @@ gcloud artifacts repositories create %AR_REPOSITORY_NAME% ^
 
 gcloud builds submit . --tag %IMAGE_URI% --machine-type=E2_HIGHCPU_8
 
-
-gcloud run deploy %SERVICE_NAME% ^
-    --image="%IMAGE_URI%" ^
-    --platform=managed ^
-    --region=%REGION% ^
-    --allow-unauthenticated ^
-    --port=%PORT% ^
-    --memory=%MEMORY% ^
-    --cpu=%CPU% ^
-    --timeout=%TIMEOUT% ^
-    --concurrency=%CONCURRENCY% ^
-    --execution-environment=gen2 ^
-    --gpu=type=%GPU_TYPE%,count=%GPU_COUNT% ^
-    --min-instances=0
-
 gcloud run deploy %SERVICE_NAME% ^
   --image %IMAGE_URI% ^
   --region %REGION% ^
