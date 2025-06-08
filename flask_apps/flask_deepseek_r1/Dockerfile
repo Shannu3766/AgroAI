@@ -1,46 +1,36 @@
-# Use an official NVIDIA CUDA base image (with toolkit & driver support)
+# Use NVIDIA CUDA base image (for L4 GPU support)
 FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
 
-# Make Python output unbuffered, install noninteractive APT, and cache Hugging Face
-ENV PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive \
-    HF_HOME=/root/.cache/huggingface \
-    LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia/lib64:$LD_LIBRARY_PATH \
-    CPATH=/usr/local/cuda/include:$CPATH
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8080
 
-# Install Python 3.11 (with dev headers), pip, git, build tools
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      python3.11 \
-      python3.11-dev \
-      python3-pip \
-      python3.11-venv \
-      build-essential \
-      git && \
-    rm -rf /var/lib/apt/lists/*
+# Install basic tools and Python
+RUN apt-get update && apt-get install -y \
+    python3.10 python3-pip python3.10-venv git curl nano \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Make python3.11 the default python3
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+# Set python3.10 as default
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 
-# Upgrade pip/setuptools/wheel
-RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools wheel
-
-# Set working directory
+# Create working directory
 WORKDIR /app
 
-# Copy and install Python dependencies
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Copy requirements (if separate)
+# COPY requirements.txt .
 
-# Copy application
-COPY . .
+# Install Python packages
+RUN pip install --upgrade pip
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip install flask unsloth
+
+# Copy the application files
+COPY app.py .
 
 # Expose port
 EXPOSE 8080
 
-# Run with Gunicorn (1 worker, threaded, long timeout for reloads)
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", \
-     "--workers", "1", \
-     "--threads", "8", \
-     "--timeout", "600", \
-     "app:app"]
+# Start Flask app using python (not Gunicorn)
+CMD ["python", "app.py"]
