@@ -1,0 +1,1 @@
+gcloud builds submit . --tag %IMAGE_URI%

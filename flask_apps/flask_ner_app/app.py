@@ -168,6 +168,23 @@ def extract_and_identify_missing(sentence):
 def home():
     return render_template('index.html')
 
+@app.route('/predict', methods=['GET'])
+def predict():
+    # Default values for all parameters
+    default_params = {
+        'Temparature': 0,
+        'Humidity': 0,
+        'Moisture': 0,
+        'Soil Type': 'none',
+        'Nitrogen': 0,
+        'Potassium': 0,
+        'Phosphorous': 0
+    }
+    return render_template('predict.html', 
+                         extracted_params=default_params,
+                         missing_params={},
+                         PREDICT_URL=PREDICT_URL)
+
 @app.route('/analyze', methods=['GET'])
 def analyze():
     session.clear()  # Clear any previous data
@@ -186,6 +203,12 @@ def process_sentence():
     # Store both extracted and missing parameters in session
     session['extracted_params'] = extracted_params
     session['missing_params_info'] = missing_params_info
+
+    # Check if this is a form submission with adjusted values
+    if request.form.get('is_adjusted') == 'true':
+        # Clear any missing parameters since values have been adjusted
+        missing_params_info = {}
+        session['missing_params_info'] = {}
 
     # Always render predict.html with both extracted and missing parameters
     return render_template('predict.html', 
@@ -256,14 +279,14 @@ def get_prediction():
             print("Error: No data provided in request")
             return jsonify({'error': 'No data provided'}), 400
 
-        print("\nSending data to prediction service:")
-        print("Request data:", json.dumps(data, indent=2))
+        # print("\nSending data to prediction service:")
+        # print("Request data:", json.dumps(data, indent=2))
 
         # Make request to prediction service
         response = requests.post(PREDICT_URL, json=data)
         
-        print("\nResponse from prediction service:")
-        print("Status code:", response.status_code)
+        # print("\nResponse from prediction service:")
+        # print("Status code:", response.status_code)
         
         if response.status_code == 200:
             prediction_result = response.json()
