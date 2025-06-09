@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Prediction | AgroAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+        }
+        .slider-track {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            outline: none;
+        }
+        .slider-track::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-leaf text-green-600 text-2xl mr-2"></i>
+                <a href="index.html" class="text-xl font-bold text-gray-800 hover:text-green-600 transition">Agro<span class="text-green-600">AI</span></a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-800 hover:text-green-600 font-medium transition">Home</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition">About</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Crop & Fertilizer Prediction</h1>
+                <div class="w-24 h-1 bg-green-500 mx-auto"></div>
+                <p class="text-gray-600 mt-4">Adjust the parameters below to get AI-powered recommendations for optimal crops and fertilizers.</p>
+            </div>
+
+            <!-- Parameter Input Section -->
+            <div class="bg-white rounded-xl shadow-md p-8 mb-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Soil Nutrients (ppm)</h2>
+                        
+                        <!-- Nitrogen Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="nitrogen" class="font-medium">Nitrogen (N)</label>
+                                <span id="nitrogenValue" class="font-semibold">250</span>
+                            </div>
+                            <input type="range" id="nitrogen" min="0" max="500" value="250" step="1" class="slider-track">
+                        </div>
+
+                        <!-- Phosphorous Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="phosphorous" class="font-medium">Phosphorous (P)</label>
+                                <span id="phosphorousValue" class="font-semibold">250</span>
+                            </div>
+                            <input type="range" id="phosphorous" min="0" max="500" value="250" step="1" class="slider-track">
+                        </div>
+
+                        <!-- Potassium Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="potassium" class="font-medium">Potassium (K)</label>
+                                <span id="potassiumValue" class="font-semibold">250</span>
+                            </div>
+                            <input type="range" id="potassium" min="0" max="500" value="250" step="1" class="slider-track">
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Environmental Factors</h2>
+
+                        <!-- Temperature Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="temperature" class="font-medium">Temperature (°C)</label>
+                                <span id="temperatureValue" class="font-semibold">25</span>
+                            </div>
+                            <input type="range" id="temperature" min="0" max="100" value="25" step="1" class="slider-track">
+                        </div>
+
+                        <!-- Humidity Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="humidity" class="font-medium">Humidity (%)</label>
+                                <span id="humidityValue" class="font-semibold">50</span>
+                            </div>
+                            <input type="range" id="humidity" min="0" max="100" value="50" step="1" class="slider-track">
+                        </div>
+
+                        <!-- Moisture Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="moisture" class="font-medium">Moisture (%)</label>
+                                <span id="moistureValue" class="font-semibold">50</span>
+                            </div>
+                            <input type="range" id="moisture" min="0" max="100" value="50" step="1" class="slider-track">
+                        </div>
+
+                        <!-- Soil Type Dropdown -->
+                        <div class="mb-6">
+                            <label for="soilType" class="block font-medium mb-2">Soil Type</label>
+                            <select id="soilType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="clay">Clay</option>
+                                <option value="sandy">Sandy</option>
+                                <option value="loamy">Loamy</option>
+                                <option value="silty">Silty</option>
+                                <option value="peaty">Peaty</option>
+                                <option value="chalky">Chalky</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-8 text-center">
+                    <button id="predictButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+                        <i class="fas fa-seedling mr-2"></i> Predict Crop & Fertilizer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="bg-white rounded-xl shadow-md p-8 hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Recommendation Results</h2>
+                
+                <!-- Results will be displayed here -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-leaf text-green-500 mr-2"></i> Recommended Crops
+                        </h3>
+                        <div id="cropResults" class="space-y-3">
+                            <!-- Crop results will be added dynamically -->
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-flask text-blue-500 mr-2"></i> Fertilizer Advice
+                        </h3>
+                        <div id="fertilizerResults">
+                            <!-- Fertilizer advice will be added dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2023 AgroAI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Update slider values in real-time
+        const sliders = ['nitrogen', 'phosphorous', 'potassium', 'temperature', 'humidity', 'moisture'];
+        
+        sliders.forEach(sliderId => {
+            const slider = document.getElementById(sliderId);
+            const valueDisplay = document.getElementById(`${sliderId}Value`);
+            
+            slider.addEventListener('input', () => {
+                valueDisplay.textContent = slider.value;
+            });
+        });
+
+        // Prediction button handler
+        document.getElementById('predictButton').addEventListener('click', () => {
+            // Get all input values
+            const nitrogen = document.getElementById('nitrogen').value;
+            const phosphorous = document.getElementById('phosphorous').value;
+            const potassium = document.getElementById('potassium').value;
+            const temperature = document.getElementById('temperature').value;
+            const humidity = document.getElementById('humidity').value;
+            const moisture = document.getElementById('moisture').value;
+            const soilType = document.getElementById('soilType').value;
+
+            // Here we would normally make an API call to get real predictions
+            // For this example, we'll simulate results
+            
+            // Show loading state
+            const button = document.getElementById('predictButton');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Analyzing...';
+            button.disabled = true;
+
+            // Simulate API delay
+            setTimeout(() => {
+                // Generate some sample recommendations
+                const sampleCrops = [
+                    { name: "Wheat", probability: "78% suitable" },
+                    { name: "Corn", probability: "65% suitable" },
+                    { name: "Soybeans", probability: "52% suitable" }
+                ];
+
+                const sampleFertilizer = `Based on your soil nutrients (N:${nitrogen}, P:${phosphorous}, K:${potassium}), 
+                ${parseInt(nitrogen) < 200 ? "consider adding nitrogen-rich fertilizer. " : ""}
+                ${parseInt(phosphorous) < 200 ? "Add phosphorous supplements. " : ""}
+                ${parseInt(potassium) < 200 ? "Include potassium in your fertilizer mix." : "Your potassium levels are adequate."}`;
+
+                // Display results
+                const cropResults = document.getElementById('cropResults');
+                const fertilizerResults = document.getElementById('fertilizerResults');
+                
+                cropResults.innerHTML = sampleCrops.map(crop => 
+                    `<div class="bg-gray-100 p-3 rounded-lg">
+                        <h4 class="font-medium">${crop.name}</h4>
+                        <p class="text-sm text-gray-600">${crop.probability}</p>
+                    </div>`
+                ).join('');
+
+                fertilizerResults.innerHTML = `<div class="bg-gray-100 p-3 rounded-lg">
+                    <p>${sampleFertilizer}</p>
+                </div>`;
+
+                // Show results section
+                document.getElementById('resultsSection').classList.remove('hidden');
+
+                // Reset button
+                button.innerHTML = '<i class="fas fa-seedling mr-2"></i> Predict Again';
+                button.disabled = false;
+
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

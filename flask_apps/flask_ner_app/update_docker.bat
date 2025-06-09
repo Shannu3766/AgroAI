@@ -20,8 +20,8 @@ gcloud run deploy %SERVICE_NAME% ^
     --allow-unauthenticated ^
     --port=8080 ^
     --memory=4Gi ^
-    --cpu=1 ^
-    --timeout=600 ^
+    --cpu=2 ^
+    --timeout=900 ^
     --concurrency=10 ^
     --cpu-boost ^
     --min-instances=0

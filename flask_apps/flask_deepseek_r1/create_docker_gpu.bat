@@ -6,7 +6,7 @@ set REGION=us-central1
 set AR_REPOSITORY_NAME=deepseek-app-repo
 set IMAGE_NAME=deepseek-flask-app
 set IMAGE_TAG=latest
-set SERVICE_NAME=deepseek-flask-gpu-service1
+set SERVICE_NAME=deepseek-flask-gpu-service
 
 set GPU_TYPE=nvidia-l4
 set GPU_COUNT=1

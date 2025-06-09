@@ -1,14 +1,35 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import os
 import torch
+import requests
 from transformers import AutoTokenizer, AutoModelForTokenClassification, pipeline
 import re # re is not explicitly used in the final version here, but good to have if complex string ops were needed.
+import json
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Needed for session management
 
 # --- Model and Configuration Constants (from notebook) ---
 MODEL_ID = "aryan6637/ner_training_with_values"
+
+# Service URLs and Status
+STATUS_URL = "https://deepseek-flask-gpu-service-742894389221.us-central1.run.app/status"
+RELOAD_URL = "https://deepseek-flask-gpu-service-742894389221.us-central1.run.app/reload"
+PREDICT_URL = "https://deepseek-flask-gpu-service-742894389221.us-central1.run.app/predict"
+SERVICE_STATUS = "unknown"  # Global variable to store service status
+
+def update_service_status():
+    global SERVICE_STATUS
+    try:
+        response = requests.get(STATUS_URL)
+        if response.status_code == 200:
+            status_data = response.json()
+            SERVICE_STATUS = status_data.get('status', 'unknown')
+            return True
+        return False
+    except Exception as e:
+        print(f"Error updating service status: {str(e)}")
+        return False
 
 REQUIRED_PARAMS = {
     'Temparature': {'ner_tag': 'TEMPERATURE_VALUE', 'type': float, 'prompt': 'Enter Temperature (°C): '},
@@ -144,9 +165,13 @@ def extract_and_identify_missing(sentence):
 
 # --- Flask Routes ---
 @app.route('/', methods=['GET'])
-def index():
-    session.clear()  # Clear any previous data
+def home():
     return render_template('index.html')
+
+@app.route('/analyze', methods=['GET'])
+def analyze():
+    session.clear()  # Clear any previous data
+    return render_template('enter_text.html')
 
 @app.route('/process', methods=['POST'])
 def process_sentence():
@@ -154,55 +179,51 @@ def process_sentence():
     
     if not sentence:
         # Handle empty sentence submission from the form, perhaps with a flash message
-        return redirect(url_for('index')) 
+        return redirect(url_for('analyze')) 
 
     extracted_params, missing_params_info = extract_and_identify_missing(sentence)
     
+    # Store both extracted and missing parameters in session
     session['extracted_params'] = extracted_params
     session['missing_params_info'] = missing_params_info
 
-    if not missing_params_info:  # All parameters were extracted by NER
-        session['final_params'] = extracted_params
-        return redirect(url_for('show_results'))
-    else:
-        # Some parameters are missing, ask the user
-        return render_template('ask_missing.html', 
-                               extracted_params=extracted_params, 
-                               missing_params=missing_params_info)
+    # Always render predict.html with both extracted and missing parameters
+    return render_template('predict.html', 
+                         extracted_params=extracted_params,
+                         missing_params=missing_params_info,
+                         PREDICT_URL=PREDICT_URL)
 
 @app.route('/submit_missing', methods=['POST'])
 def submit_missing():
     # Retrieve stored data from session
     extracted_params = session.get('extracted_params', {})
-    missing_params_info = session.get('missing_params_info', {}) # Details of what was missing
+    missing_params_info = session.get('missing_params_info', {})
     
-    final_parameters = extracted_params.copy() # Start with already NER-extracted params
-    form_errors = {} # To collect validation errors
+    final_parameters = extracted_params.copy()
+    form_errors = {}
 
     # Process user input for each missing parameter
     for param_name, info in missing_params_info.items():
         user_input_str = request.form.get(param_name)
-        expected_type_str = info['type'] # 'float', 'int', or 'str'
+        expected_type_str = info['type']
         
         if user_input_str is None or user_input_str.strip() == "":
             form_errors[param_name] = f"This field is required."
             continue
 
         try:
-            # Convert and validate input based on expected type
             if expected_type_str == 'float':
                 value = float(user_input_str)
             elif expected_type_str == 'int':
-                value = int(float(user_input_str)) # Handles "30.0" then int
+                value = int(float(user_input_str))
             else: # str
                 value = user_input_str.strip()
             
-            # Additional validation (e.g., non-negative for numbers as in notebook)
             if expected_type_str != 'str' and value < 0:
                 form_errors[param_name] = f"{param_name.capitalize()} cannot be negative."
                 continue
             
-            if not value and expected_type_str == 'str': # Ensure non-empty string for soil type
+            if not value and expected_type_str == 'str':
                  form_errors[param_name] = f"Soil Type cannot be empty."
                  continue
 
@@ -211,53 +232,116 @@ def submit_missing():
             form_errors[param_name] = f"Invalid input. Expected a {expected_type_str}."
 
     if form_errors:
-        # If there are errors, re-render the 'ask_missing' form with error messages
-        # and previously submitted values to allow correction.
-        return render_template('ask_missing.html', 
-                               extracted_params=extracted_params, 
-                               missing_params=missing_params_info, 
-                               errors=form_errors,
-                               form_values=request.form) # Pass current form values to repopulate
+        return render_template('predict.html', 
+                             extracted_params=extracted_params,
+                             missing_params=missing_params_info,
+                             errors=form_errors,
+                             form_values=request.form,
+                             PREDICT_URL=PREDICT_URL)
 
-    # Ensure all REQUIRED_PARAMS keys are in final_parameters
-    # This is a safeguard; ideally, form_errors should catch all issues.
-    for req_key in REQUIRED_PARAMS.keys():
-        if req_key not in final_parameters:
-             # This situation implies a parameter was expected but not processed,
-             # potentially due to logic error or if it wasn't in missing_params_info
-             # but also not in extracted_params.
-             if req_key not in form_errors: # Add error if not already present
-                form_errors[req_key] = f"{req_key.capitalize()} is still missing. Please provide it."
-    
-    if form_errors: # Re-check if safeguard added errors
-        return render_template('ask_missing.html', 
-                               extracted_params=extracted_params, 
-                               missing_params=missing_params_info, 
-                               errors=form_errors,
-                               form_values=request.form)
-
+    # Update session with final parameters
     session['final_params'] = final_parameters
-    return redirect(url_for('show_results'))
+    
+    # Return to predict page with updated parameters
+    return render_template('predict.html', 
+                         extracted_params=final_parameters,
+                         missing_params={},  # No missing params after successful submission
+                         PREDICT_URL=PREDICT_URL)
+
+@app.route('/get_prediction', methods=['POST'])
+def get_prediction():
+    try:
+        data = request.get_json()
+        if not data:
+            print("Error: No data provided in request")
+            return jsonify({'error': 'No data provided'}), 400
+
+        print("\nSending data to prediction service:")
+        print("Request data:", json.dumps(data, indent=2))
+
+        # Make request to prediction service
+        response = requests.post(PREDICT_URL, json=data)
+        
+        print("\nResponse from prediction service:")
+        print("Status code:", response.status_code)
+        
+        if response.status_code == 200:
+            prediction_result = response.json()
+            print("Prediction result:", json.dumps(prediction_result, indent=2))
+            
+            # Store the result in session
+            session['prediction_result'] = prediction_result
+            
+            # Return the formatted response
+            return jsonify({
+                'recommendation': prediction_result.get('recommendation', {}),
+                'input_parameters': prediction_result.get('input_parameters', {}),
+                'raw_response': prediction_result.get('raw_response', '')
+            })
+        else:
+            print("Error response:", response.text)
+            return jsonify({'error': 'Prediction service error'}), 500
+
+    except Exception as e:
+        print("Exception occurred:", str(e))
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/results')
 def show_results():
     final_params = session.get('final_params')
+    prediction_result = session.get('prediction_result')
+    
     if final_params is None: # Should not happen if flow is correct, but good check
-        return redirect(url_for('index')) 
-    return render_template('results.html', final_params=final_params)
+        return redirect(url_for('index'))
+        
+    return render_template('results.html', 
+                         final_params=final_params,
+                         prediction_result=prediction_result)
 
-# Initialize the model when the application starts
-# For production, consider Gunicorn's --preload or similar mechanisms
-# to load the model once before worker processes are forked.
+@app.route('/check_status', methods=['GET'])
+def check_status():
+    global SERVICE_STATUS
+    try:
+        if update_service_status():
+            if SERVICE_STATUS == 'unloaded':
+                # Trigger reload
+                reload_response = requests.post(RELOAD_URL)
+                if reload_response.status_code == 200:
+                    SERVICE_STATUS = 'ready'  # Update status after successful reload
+                    return {'message': 'Service reloaded successfully', 'status': SERVICE_STATUS}, 200
+                else:
+                    return {'error': 'Failed to reload service', 'status': SERVICE_STATUS}, 500
+            elif SERVICE_STATUS == 'ready':
+                return {'message': 'Service is ready', 'status': SERVICE_STATUS}, 200
+            else:
+                return {'error': 'Unknown status', 'status': SERVICE_STATUS}, 500
+        else:
+            return {'error': 'Failed to check status', 'status': SERVICE_STATUS}, 500
+    except Exception as e:
+        return {'error': f'Error checking status: {str(e)}', 'status': SERVICE_STATUS}, 500
+
+
 with app.app_context():
+    # Check service status before initializing
+    if update_service_status():
+        if SERVICE_STATUS == 'unloaded':
+            # Trigger reload
+            reload_response = requests.post(RELOAD_URL)
+            if reload_response.status_code == 200:
+                SERVICE_STATUS = 'ready'
+                print("Service reloaded successfully")
+            else:
+                print("Warning: Failed to reload service")
+        elif SERVICE_STATUS == 'ready':
+            print("Service is ready")
+        else:
+            print(f"Warning: Unknown service status: {SERVICE_STATUS}")
+    else:
+        print("Warning: Failed to check service status")
+    
+    # Initialize the model
     init_model()
 
-# if __name__ == '__main__':
-#     app.run(debug=True) # debug=True is for development
-
-
-
-# ... (rest of your app.py code) ...
 
 if __name__ == '__main__':
     # This is for local development.
