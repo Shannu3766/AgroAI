@@ -25,12 +25,32 @@ nlp/
 ├── src/                    # Source code directory
 │   ├── apps/              # Application code
 │   │   ├── deepseek-app/  # DeepSeek model application
+│   │   │   ├── app.py                    # Main DeepSeek application
+│   │   │   ├── generate_response.py      # Response generation module
+│   │   │   ├── Dockerfile               # Docker configuration
+│   │   │   ├── deploy_docker.bat        # Deployment script
+│   │   │   └── requirements.txt         # Python dependencies
 │   │   └── ner-app/       # NER application
+│   │       ├── app.py                    # Main NER application
+│   │       ├── Dockerfile               # Docker configuration
+│   │       ├── deploy_docker.bat        # Deployment script
+│   │       ├── app.yaml                 # Google Cloud configuration
+│   │       └── requirements.txt         # Python dependencies
 │   ├── notebooks/         # Jupyter notebooks
 │   │   ├── training/      # Training notebooks
+│   │   │   ├── ner_training.ipynb           # NER model training
+│   │   │   └── deepseek_finetuning.ipynb    # DeepSeek model fine-tuning
 │   │   └── testing/       # Testing notebooks
+│   │       ├── deepseek_test.ipynb          # DeepSeek model testing
+│   │       ├── bert_test.ipynb              # BERT model testing
+│   │       ├── ner_test.ipynb               # NER model testing
+│   │       └── deepseek_ner_test.ipynb      # Integrated testing
 │   └── models/            # Model files and configurations
+│       ├── ner_model/                      # NER model files
+│       └── deepseek_model/                 # DeepSeek model files
 ├── docs/                  # Documentation
+│   ├── api/                               # API documentation
+│   └── deployment/                        # Deployment guides
 ├── README.md             # Project documentation
 ├── LICENSE               # License file
 └── .gitignore           # Git ignore file
