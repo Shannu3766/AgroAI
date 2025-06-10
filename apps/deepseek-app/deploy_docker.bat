@@ -1,12 +1,9 @@
-@echo off
-
-
 set PROJECT_ID=axiomatic-grove-403514
 set REGION=us-central1
 set AR_REPOSITORY_NAME=deepseek-app-repo
 set IMAGE_NAME=deepseek-flask-app
 set IMAGE_TAG=latest
-set SERVICE_NAME=deepseek-flask-gpu-service1
+set SERVICE_NAME=deepseek-flask-gpu-service
 
 set GPU_TYPE=nvidia-l4
 set GPU_COUNT=1
@@ -26,21 +23,6 @@ gcloud artifacts repositories create %AR_REPOSITORY_NAME% ^
   --description="Docker repo for DeepSeek Flask app" 
 
 gcloud builds submit . --tag %IMAGE_URI% --machine-type=E2_HIGHCPU_8
-
-
-gcloud run deploy %SERVICE_NAME% ^
-    --image="%IMAGE_URI%" ^
-    --platform=managed ^
-    --region=%REGION% ^
-    --allow-unauthenticated ^
-    --port=%PORT% ^
-    --memory=%MEMORY% ^
-    --cpu=%CPU% ^
-    --timeout=%TIMEOUT% ^
-    --concurrency=%CONCURRENCY% ^
-    --execution-environment=gen2 ^
-    --gpu=type=%GPU_TYPE%,count=%GPU_COUNT% ^
-    --min-instances=0
 
 gcloud run deploy %SERVICE_NAME% ^
   --image %IMAGE_URI% ^

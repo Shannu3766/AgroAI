@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Prediction | AgroAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+        }
+        .slider-track {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            outline: none;
+        }
+        .slider-track::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        }
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fee2e2;
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 16px;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 400px;
+        }
+        .custom-alert.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Custom Alert Box -->
+    <div id="customAlert" class="custom-alert">
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-lg font-medium text-red-800">Please check the following:</h3>
+                <div id="alertMessages" class="mt-2 text-sm text-red-700"></div>
+            </div>
+            <div class="ml-auto pl-3">
+                <button onclick="closeAlert()" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-leaf text-green-600 text-2xl mr-2"></i>
+                <a href="index.html" class="text-xl font-bold text-gray-800 hover:text-green-600 transition">Agro<span class="text-green-600">AI</span></a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-800 hover:text-green-600 font-medium transition">Home</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition">About</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Crop & Fertilizer Prediction</h1>
+                <div class="w-24 h-1 bg-green-500 mx-auto"></div>
+                <p class="text-gray-600 mt-4">Adjust the parameters below to get AI-powered recommendations for optimal crops and fertilizers.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Left Two Columns: Input Section -->
+                <div class="md:col-span-2">
+                    <div class="bg-white rounded-xl shadow-md p-8">
+                        <!-- Soil Type Input at the top -->
+                        <div class="mb-8 text-center">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Soil Type</h2>
+                            <div class="max-w-md mx-auto">
+                                <input 
+                                    type="text" 
+                                    id="soilType" 
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 {% if 'Soil Type' in missing_params %}border-red-500{% endif %}"
+                                    placeholder="Enter soil type (e.g., loamy, red clay, black soil, sandy)"
+                                    value="{{ extracted_params.get('Soil Type', '') if extracted_params.get('Soil Type') != 'none' else '' }}"
+                                    required
+                                >
+                                {% if 'Soil Type' in missing_params %}
+                                <p class="text-red-500 text-sm mt-1">Please enter the soil type</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Soil Nutrients (ppm)</h2>
+                        
+                        <!-- Nitrogen Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="nitrogen" class="font-medium">Nitrogen (N)</label>
+                                <span id="nitrogenValue" class="font-semibold">{{ extracted_params.get('Nitrogen', 250) }}</span>
+                            </div>
+                            <input type="range" id="nitrogen" min="0" max="50" value="{{ extracted_params.get('Nitrogen', 250) }}" step="1" class="slider-track">
+                                    {% if 'Nitrogen' in missing_params %}
+                                    <p class="text-red-500 text-sm mt-1">Please adjust the nitrogen value</p>
+                                    {% endif %}
+                        </div>
+
+                        <!-- Phosphorous Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="phosphorous" class="font-medium">Phosphorous (P)</label>
+                                <span id="phosphorousValue" class="font-semibold">{{ extracted_params.get('Phosphorous', 250) }}</span>
+                            </div>
+                            <input type="range" id="phosphorous" min="0" max="50" value="{{ extracted_params.get('Phosphorous', 250) }}" step="1" class="slider-track">
+                                    {% if 'Phosphorous' in missing_params %}
+                                    <p class="text-red-500 text-sm mt-1">Please adjust the phosphorous value</p>
+                                    {% endif %}
+                        </div>
+
+                        <!-- Potassium Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="potassium" class="font-medium">Potassium (K)</label>
+                                <span id="potassiumValue" class="font-semibold">{{ extracted_params.get('Potassium', 250) }}</span>
+                            </div>
+                            <input type="range" id="potassium" min="0" max="50" value="{{ extracted_params.get('Potassium', 250) }}" step="1" class="slider-track">
+                                    {% if 'Potassium' in missing_params %}
+                                    <p class="text-red-500 text-sm mt-1">Please adjust the potassium value</p>
+                                    {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Environmental Factors</h2>
+
+                        <!-- Temperature Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="temperature" class="font-medium">Temperature (°C)</label>
+                                <span id="temperatureValue" class="font-semibold">{{ extracted_params.get('Temparature', 25) }}</span>
+                            </div>
+                            <input type="range" id="temperature" min="0" max="50" value="{{ extracted_params.get('Temparature', 25) }}" step="1" class="slider-track">
+                                    {% if 'Temparature' in missing_params %}
+                                    <p class="text-red-500 text-sm mt-1">Please adjust the temperature value</p>
+                                    {% endif %}
+                        </div>
+
+                        <!-- Humidity Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="humidity" class="font-medium">Humidity (%)</label>
+                                <span id="humidityValue" class="font-semibold">{{ extracted_params.get('Humidity', 50) }}</span>
+                            </div>
+                            <input type="range" id="humidity" min="0" max="90" value="{{ extracted_params.get('Humidity', 50) }}" step="1" class="slider-track">
+                                    {% if 'Humidity' in missing_params %}
+                                    <p class="text-red-500 text-sm mt-1">Please adjust the humidity value</p>
+                                    {% endif %}
+                        </div>
+
+                        <!-- Moisture Slider -->
+                        <div class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <label for="moisture" class="font-medium">Moisture (%)</label>
+                                <span id="moistureValue" class="font-semibold">{{ extracted_params.get('Moisture', 50) }}</span>
+                            </div>
+                            <input type="range" id="moisture" min="0" max="70" value="{{ extracted_params.get('Moisture', 50) }}" step="1" class="slider-track">
+                                    {% if 'Moisture' in missing_params %}
+                                    <p class="text-red-500 text-sm mt-1">Please adjust the moisture value</p>
+                                    {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-8 text-center">
+                    <button id="predictButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+                                <i class="fas fa-seedling mr-2"></i> {% if missing_params %}Update Parameters{% else %}Predict Crop & Fertilizer{% endif %}
+                    </button>
+                        </div>
+                </div>
+            </div>
+
+                <!-- Right Column: Results Section -->
+                <div id="resultsSection" class="bg-white rounded-xl shadow-md p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Recommendation Results</h2>
+                
+                    <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-leaf text-green-500 mr-2"></i> Recommended Crops
+                        </h3>
+                        <div id="cropResults" class="space-y-3">
+                                <!-- Placeholder message -->
+                                <div class="bg-gray-50 p-6 rounded-lg text-center">
+                                    <i class="fas fa-seedling text-gray-400 text-4xl mb-4"></i>
+                                    <p class="text-gray-600">Your crop recommendations will appear here</p>
+                                    <p class="text-sm text-gray-500 mt-2">Adjust the parameters and click predict to get personalized recommendations</p>
+                                </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-flask text-blue-500 mr-2"></i> Fertilizer Advice
+                        </h3>
+                        <div id="fertilizerResults">
+                                <!-- Placeholder message -->
+                                <div class="bg-gray-50 p-6 rounded-lg text-center">
+                                    <i class="fas fa-flask text-gray-400 text-4xl mb-4"></i>
+                                    <p class="text-gray-600">Your fertilizer recommendations will appear here</p>
+                                    <p class="text-sm text-gray-500 mt-2">Get expert advice on the best fertilizers for your crops</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2023 AgroAI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Function to show custom alert
+        function showAlert(messages) {
+            const alertDiv = document.getElementById('customAlert');
+            const messagesDiv = document.getElementById('alertMessages');
+            messagesDiv.innerHTML = messages.map(msg => `<p class="mb-1">• ${msg}</p>`).join('');
+            alertDiv.classList.add('show');
+        }
+
+        // Function to close custom alert
+        function closeAlert() {
+            const alertDiv = document.getElementById('customAlert');
+            alertDiv.classList.remove('show');
+        }
+
+        // Update slider values in real-time
+        const sliders = ['nitrogen', 'phosphorous', 'potassium', 'temperature', 'humidity', 'moisture'];
+        
+        sliders.forEach(sliderId => {
+            const slider = document.getElementById(sliderId);
+            const valueDisplay = document.getElementById(`${sliderId}Value`);
+            
+            slider.addEventListener('input', () => {
+                valueDisplay.textContent = slider.value;
+                // Remove warning message if it exists
+                const warningElement = slider.parentElement.querySelector('.text-red-500');
+                if (warningElement) {
+                    warningElement.remove();
+                }
+            });
+        });
+
+        // Add event listener for soil type input
+        const soilTypeInput = document.getElementById('soilType');
+        soilTypeInput.addEventListener('input', () => {
+            // Remove warning message if it exists
+            const warningElement = soilTypeInput.parentElement.querySelector('.text-red-500');
+            if (warningElement) {
+                warningElement.remove();
+            }
+        });
+
+        // Prediction button handler
+        document.getElementById('predictButton').addEventListener('click', () => {
+            // Get all input values
+            const nitrogen = document.getElementById('nitrogen').value;
+            const phosphorous = document.getElementById('phosphorous').value;
+            const potassium = document.getElementById('potassium').value;
+            const temperature = document.getElementById('temperature').value;
+            const humidity = document.getElementById('humidity').value;
+            const moisture = document.getElementById('moisture').value;
+            const soilType = document.getElementById('soilType').value;
+
+            // Check for zero values or empty soil type
+            let errorMessages = [];
+            
+            if (nitrogen === '0') errorMessages.push('Nitrogen value is zero');
+            if (phosphorous === '0') errorMessages.push('Phosphorous value is zero');
+            if (potassium === '0') errorMessages.push('Potassium value is zero');
+            if (temperature === '0') errorMessages.push('Temperature value is zero');
+            if (humidity === '0') errorMessages.push('Humidity value is zero');
+            if (moisture === '0') errorMessages.push('Moisture value is zero');
+            if (soilType === '' || soilType === 'none') errorMessages.push('Soil type is not entered');
+
+            if (errorMessages.length > 0) {
+                showAlert(errorMessages);
+                return;
+            }
+
+            // Create the data object
+            const data = {
+                "Temparature": parseFloat(temperature),
+                "Humidity": parseFloat(humidity),
+                "Moisture": parseFloat(moisture),
+                "Soil Type": soilType,
+                "Nitrogen": parseInt(nitrogen),
+                "Potassium": parseInt(potassium),
+                "Phosphorous": parseInt(phosphorous),
+                "is_adjusted": "true"
+            };
+
+            // Show loading state
+            const button = document.getElementById('predictButton');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Analyzing...';
+            button.disabled = true;
+
+            // Make the API call to PREDICT_URL
+            fetch('/get_prediction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(result => {
+                // Display results
+                const cropResults = document.getElementById('cropResults');
+                const fertilizerResults = document.getElementById('fertilizerResults');
+                
+                // Update the results display with the API response
+                if (result.recommendation && result.recommendation['Recommended Crop Type']) {
+                    cropResults.innerHTML = `
+                        <div class="bg-gray-100 p-3 rounded-lg">
+                            <h4 class="font-medium">${result.recommendation['Recommended Crop Type']}</h4>
+                            <p class="text-sm text-gray-600">Based on your soil and environmental conditions</p>
+                        </div>`;
+                } else {
+                    cropResults.innerHTML = '<p>No crop recommendations available</p>';
+                }
+
+                if (result.recommendation && result.recommendation['Recommended Fertilizer']) {
+                    fertilizerResults.innerHTML = `
+                        <div class="bg-gray-100 p-3 rounded-lg">
+                            <h4 class="font-medium">Recommended Fertilizer</h4>
+                            <p class="text-gray-600">${result.recommendation['Recommended Fertilizer']}</p>
+                        </div>`;
+                } else {
+                    fertilizerResults.innerHTML = '<p>No fertilizer recommendations available</p>';
+                }
+
+                // Reset button
+                button.innerHTML = '<i class="fas fa-seedling mr-2"></i> Predict Again';
+                button.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show error message
+                alert('An error occurred while getting predictions. Please try again.');
+                
+                // Reset button
+                button.innerHTML = '<i class="fas fa-seedling mr-2"></i> Predict Again';
+                button.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

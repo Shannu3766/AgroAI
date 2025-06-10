@@ -1,0 +1,12 @@
+gcloud run deploy %SERVICE_NAME% ^
+    --image="%IMAGE_URI%" ^
+    --platform=managed ^
+    --region=%REGION% ^
+    --allow-unauthenticated ^
+    --port=8080 ^
+    --memory=4Gi ^
+    --cpu=4 ^
+    --timeout=300 ^
+    --concurrency=10 ^
+    --cpu-boost ^
+    --min-instances=0
