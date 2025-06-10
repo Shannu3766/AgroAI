@@ -1,5 +1,21 @@
 # NLP Project: Named Entity Recognition and DeepSeek Implementation
 
+## 🌱 Smart Agriculture Assistant
+
+This application processes natural language input to extract key agricultural parameters and provide intelligent crop and fertilizer recommendations. It identifies the following parameters from user input:
+- Temperature
+- Humidity
+- Moisture
+- Soil Type
+- Nitrogen levels
+- Potassium levels
+- Phosphorous levels
+
+Using advanced Named Entity Recognition (NER) and DeepSeek model integration, the system analyzes these parameters to provide:
+- Optimal crop recommendations
+- Suitable fertilizer suggestions
+- Agricultural best practices
+
 This repository contains a comprehensive NLP project focusing on Named Entity Recognition (NER) and DeepSeek model implementation. The project includes training notebooks, testing scripts, and Flask-based web applications for deployment.
 
 ## Project Structure
