@@ -168,7 +168,6 @@ def predict():
         clear_gpu_memory()
         return jsonify({"error": "Inference failed"}), 500
 
-# --- Initialize Model on Startup ---
 def init_model_background():
     logging.info("Spawning model load in background process.")
     p = multiprocessing.Process(target=load_model)
