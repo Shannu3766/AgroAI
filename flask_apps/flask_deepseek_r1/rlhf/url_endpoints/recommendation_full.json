@@ -1,0 +1,16 @@
+{
+    "input_parameters": {
+        "Humidity": 52,
+        "Moisture": 38,
+        "Nitrogen": 37,
+        "Phosphorous": 0,
+        "Potassium": 0,
+        "Soil Type": "Loamy",
+        "Temparature": 26
+    },
+    "raw_response": "Recommended Crop Type: Cotton\nRecommended Fertilizer: 28-28",
+    "recommendation": {
+        "Recommended Crop Type": "Cotton",
+        "Recommended Fertilizer": "28-28"
+    }
+}
