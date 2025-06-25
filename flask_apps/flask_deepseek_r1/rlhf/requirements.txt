@@ -1,0 +1,13 @@
+flask
+gunicorn
+pymongo
+torch
+transformers
+datasets
+accelerate
+bitsandbytes
+trl
+unsloth[cu121-py310]
+pandas
+scipy
+dotenv
