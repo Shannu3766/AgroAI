@@ -3,7 +3,8 @@ import json
 
 # --- API Configuration ---
 # All requests go to the /predict endpoint. There is no /feedback.
-API_URL = "https://deepseek-test-742894389221.us-central1.run.app/predict"
+predict_url = "https://deepseek-test-742894389221.us-central1.run.app/predict"
+feed_back_url = "https://deepseek-test-742894389221.us-central1.run.app/feedback"
 
 
 def get_prediction(input_data):
@@ -13,7 +14,7 @@ def get_prediction(input_data):
     """
     print("--> Sending data to /predict endpoint for prediction...")
     try:
-        response = requests.post(API_URL, json=input_data)
+        response = requests.post(predict_url, json=input_data)
         response.raise_for_status()
         result = response.json()
         print("--> Received prediction from API.")
@@ -48,7 +49,7 @@ def send_corrective_feedback(prompt_object, chosen_string, rejected_string):
     print(json.dumps(feedback_payload, indent=2))
     
     try:
-        response = requests.post(API_URL, json=feedback_payload)
+        response = requests.post(feed_back_url, json=feedback_payload)
         response.raise_for_status()
         print("\n--> Feedback logged successfully!")
         print(f"    Server Response: {response.text}")
