@@ -3,10 +3,6 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
 from datetime import datetime
 
-# --- CONFIGURATION ---
-# Paste the exact MongoDB URI you provided.
-# NOTE: In a real application, never hardcode credentials. Use environment variables.
-# This is only for a quick, local test script.
 MONGO_URI = "mongodb+srv://98sh32:SHANNU@nlp.fsz4tmh.mongodb.net/?retryWrites=true&w=majority&appName=NLP"
 
 # These should match the DB and Collection names from your app.py

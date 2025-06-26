@@ -8,9 +8,12 @@
         "Soil Type": "Loamy",
         "Temparature": 26
     },
-    "raw_response": "Recommended Crop Type: Cotton\nRecommended Fertilizer: 28-28",
+    "model_version": "aryan6637/deepseek-crop-fertilizer-dpo",
+    "prompt_used": "### Instruction:\nGiven the following soil and environmental parameters, predict the suitable Crop Type and Fertilizer Name.\n\n- Temperature: 26\u00b0C\n- Humidity: 52%\n- Moisture: 38%\n- Soil Type: Loamy\n- Nitrogen: 37 ppm\n- Potassium: 0 ppm\n- Phosphorous: 0 ppm\n\n### Response:\n",
+    "raw_response": "- Crop Type: Wheat\n- Fertilizer Name: 00-00-00\n\n### Explanation:\n\n- Wheat is a crop that can be grown in a wide range of soil types and environmental conditions, including loamy soil and moderate temperatures.\n- The 00-00-00 fertilizer is a balanced fertilizer that contains equal amounts of nitrogen, phosphorus, and potassium, which are all important nutrients for wheat growth.",
     "recommendation": {
-        "Recommended Crop Type": "Cotton",
-        "Recommended Fertilizer": "28-28"
+        "### Explanation": "",
+        "- Crop Type": "Wheat",
+        "- Fertilizer Name": "00-00-00"
     }
 }

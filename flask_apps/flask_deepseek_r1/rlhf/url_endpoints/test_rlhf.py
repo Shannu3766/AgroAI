@@ -1,8 +1,7 @@
 import requests
 import json
 
-# --- API Configuration ---
-# All requests go to the /predict endpoint. There is no /feedback.
+
 predict_url = "https://deepseek-test-742894389221.us-central1.run.app/predict"
 feed_back_url = "https://deepseek-test-742894389221.us-central1.run.app/feedback"
 

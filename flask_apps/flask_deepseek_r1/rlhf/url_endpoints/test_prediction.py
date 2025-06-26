@@ -25,8 +25,8 @@ try:
 
     recommendation = full_result.get("recommendation", {})
 
-    crop = recommendation.get("Recommended Crop Type", "Not found")
-    fertilizer = recommendation.get("Recommended Fertilizer", "Not found")
+    crop = recommendation.get("- Crop Type", "Not found")
+    fertilizer = recommendation.get("- Fertilizer Name", "Not found")
 
     print("Crop Type:", crop)
     print("Fertilizer Name:", fertilizer)
