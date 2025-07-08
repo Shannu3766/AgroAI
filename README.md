@@ -1,167 +1,196 @@
-# NLP Project: Named Entity Recognition and DeepSeek Implementation
+<!-- Showcase -->
+<p align="center">
+  <img src="ner.png" alt="NER Example" width="350"/>
+  <img src="predict.png" alt="Prediction Example" width="350"/>
+</p>
 
-## 🌱 Smart Agriculture Assistant
+<p align="center">
+  <b>Demo Video:</b><br/>
+  <a href="AI%20Agricultural%20Insights%20Platform.mp4">AI Agricultural Insights Platform.mp4</a>
+</p>
 
-This application processes natural language input to extract key agricultural parameters and provide intelligent crop and fertilizer recommendations. It identifies the following parameters from user input:
-- Temperature
-- Humidity
-- Moisture
-- Soil Type
-- Nitrogen levels
-- Potassium levels
-- Phosphorous levels
+<!-- HTML5 video tag for local viewing (may not work on GitHub) -->
+<p align="center">
+  <video width="600" controls>
+    <source src="AI Agricultural Insights Platform.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <br/>
+  <i>Note: Video playback may not work on GitHub, but will work if you open this README locally in a browser.</i>
+</p>
 
-Using advanced Named Entity Recognition (NER) and DeepSeek model integration, the system analyzes these parameters to provide:
-- Optimal crop recommendations
-- Suitable fertilizer suggestions
-- Agricultural best practices
+# Smart Agriculture NLP Suite
 
-This repository contains a comprehensive NLP project focusing on Named Entity Recognition (NER) and DeepSeek model implementation. The project includes training notebooks, testing scripts, and Flask-based web applications for deployment.
+This repository contains a suite of applications and notebooks for advanced Natural Language Processing (NLP) in the agriculture domain, including Named Entity Recognition (NER), DeepSeek model integration, and web-based deployment using Flask and Docker.
+
+---
 
 ## Project Structure
 
 ```
 nlp/
-├── src/                    # Source code directory
-│   ├── apps/              # Application code
-│   │   ├── deepseek-app/  # DeepSeek model application
-│   │   │   ├── app.py                    # Main DeepSeek application
-│   │   │   ├── generate_response.py      # Response generation module
-│   │   │   ├── Dockerfile               # Docker configuration
-│   │   │   ├── deploy_docker.bat        # Deployment script
-│   │   │   └── requirements.txt         # Python dependencies
-│   │   └── ner-app/       # NER application
-│   │       ├── app.py                    # Main NER application
-│   │       ├── Dockerfile               # Docker configuration
-│   │       ├── deploy_docker.bat        # Deployment script
-│   │       ├── app.yaml                 # Google Cloud configuration
-│   │       └── requirements.txt         # Python dependencies
-│   ├── notebooks/         # Jupyter notebooks
-│   │   ├── training/      # Training notebooks
-│   │   │   ├── ner_training.ipynb           # NER model training
-│   │   │   └── deepseek_finetuning.ipynb    # DeepSeek model fine-tuning
-│   │   └── testing/       # Testing notebooks
-│   │       ├── deepseek_test.ipynb          # DeepSeek model testing
-│   │       ├── bert_test.ipynb              # BERT model testing
-│   │       ├── ner_test.ipynb               # NER model testing
-│   │       └── deepseek_ner_test.ipynb      # Integrated testing
-│   └── models/            # Model files and configurations
-│       ├── ner_model/                      # NER model files
-│       └── deepseek_model/                 # DeepSeek model files
-├── docs/                  # Documentation
-│   ├── api/                               # API documentation
-│   └── deployment/                        # Deployment guides
-├── README.md             # Project documentation
-├── LICENSE               # License file
-└── .gitignore           # Git ignore file
+├── flask_apps/
+│   ├── keepactive.py
+│   ├── flask_ner_app/
+│   │   ├── app.py
+│   │   ├── app-HP.py
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   ├── app.yaml
+│   │   ├── .gcloudignore
+│   │   ├── .dockerignore
+│   │   ├── deploy.bat
+│   │   ├── create_repo.bat
+│   │   ├── build.bat
+│   │   ├── intialize.bat
+│   │   └── templates/
+│   │       ├── index.html
+│   │       ├── predict.html
+│   │       ├── results.html
+│   │       ├── enter_text.html
+│   │       ├── ask_missing.html
+│   │       ├── index-HP.html
+│   │       ├── predict-HP.html
+│   │       └── results-HP.html
+│   └── flask_deepseek_r1/
+│       ├── app.py
+│       ├── generate_response.py
+│       ├── Dockerfile
+│       ├── requirements.txt
+│       ├── create_docker_gpu.bat
+│       ├── rundocker.bat
+│       └── rebuild.bat
+├── training/
+│   ├── ner-trainingwithvalues.ipynb
+│   ├── ner-trainingwithvalues-HP.ipynb
+│   ├── finetuning_deepseek.ipynb
+│   ├── finetuning_deepseek-HP.ipynb
+│   ├── ner-training-withoutvalues.ipynb
+│   └── ner-training-withoutvalues-HP.ipynb
+└── testing/
+    ├── deepseek_with_gpu_test.ipynb
+    ├── deepseek_with_gpu_test-HP.ipynb
+    ├── Ner_testing_with_values.ipynb
+    ├── Ner_testing_with_values-HP.ipynb
+    ├── deepseek_ner_final.ipynb
+    ├── deepseek_ner_final-HP.ipynb
+    ├── final-testing-cpu.ipynb
+    ├── final-testing-cpu-HP.ipynb
+    ├── testing-bert.ipynb
+    ├── testing-bert-HP.ipynb
+    ├── testing-deepseek.ipynb
+    ├── testing-deepseek-HP.ipynb
 ```
 
-## Features
+---
 
-- Named Entity Recognition (NER) implementation
-- DeepSeek model integration
-- Flask-based web applications for model deployment
-- Training and testing notebooks
-- Docker support for containerization
-- Google Cloud deployment configuration
+## Components
 
-## Getting Started
+### 1. Flask Web Applications
 
-### Prerequisites
+#### A. `flask_ner_app`
+- **Purpose:** Web interface for NER tasks.
+- **Key Files:**
+  - `app.py`, `app-HP.py`: Main Flask app scripts.
+  - `Dockerfile`: Containerization for deployment.
+  - `requirements.txt`: Python dependencies.
+  - `app.yaml`, `.gcloudignore`, `.dockerignore`: Google Cloud deployment configs.
+  - `deploy.bat`, `create_repo.bat`, `build.bat`, `intialize.bat`: Automation scripts.
+  - `templates/`: HTML templates for the web UI.
 
-- Python 3.8+
-- pip
-- Docker (for containerization)
-- Google Cloud SDK (for deployment)
-- Google Cloud account with billing enabled
+#### B. `flask_deepseek_r1`
+- **Purpose:** Web service for DeepSeek model inference.
+- **Key Files:**
+  - `app.py`: Main Flask app.
+  - `generate_response.py`: Model response logic.
+  - `Dockerfile`: Containerization for deployment.
+  - `requirements.txt`: Python dependencies.
+  - `create_docker_gpu.bat`, `rundocker.bat`, `rebuild.bat`: Automation scripts.
 
-### Installation
+#### C. `keepactive.py`
+- **Purpose:** Utility script (details depend on implementation).
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/nlp.git
-cd nlp
-```
+---
 
-2. Install dependencies for each application:
-```bash
-# For NER application
-cd apps/ner-app
-pip install -r requirements.txt
+### 2. Jupyter Notebooks
 
-# For DeepSeek application
-cd ../deepseek-app
-pip install -r requirements.txt
-```
+#### A. `training/`
+- **Purpose:** Model training and fine-tuning.
+- **Notebooks:**
+  - `ner-trainingwithvalues.ipynb`, `ner-trainingwithvalues-HP.ipynb`
+  - `finetuning_deepseek.ipynb`, `finetuning_deepseek-HP.ipynb`
+  - `ner-training-withoutvalues.ipynb`, `ner-training-withoutvalues-HP.ipynb`
 
-## Deployment Instructions
+#### B. `testing/`
+- **Purpose:** Model evaluation and testing.
+- **Notebooks:**
+  - `deepseek_with_gpu_test.ipynb`, `deepseek_with_gpu_test-HP.ipynb`
+  - `Ner_testing_with_values.ipynb`, `Ner_testing_with_values-HP.ipynb`
+  - `deepseek_ner_final.ipynb`, `deepseek_ner_final-HP.ipynb`
+  - `final-testing-cpu.ipynb`, `final-testing-cpu-HP.ipynb`
+  - `testing-bert.ipynb`, `testing-bert-HP.ipynb`
+  - `testing-deepseek.ipynb`, `testing-deepseek-HP.ipynb`
 
-### DeepSeek Application Deployment
+---
 
-1. Navigate to the DeepSeek application directory:
-```bash
-cd apps/deepseek-app
-```
+## Deployment
 
-2. Deploy using the provided script:
-```bash
-deploy_docker.bat
-```
+### Google Cloud Run (Recommended)
 
-The DeepSeek application will be deployed to Google Cloud Run with GPU support. The service URL will be:
-```
-https://deepseek-flask-gpu-service-742894389221.us-central1.run.app
-```
+1. **Build and Deploy DeepSeek Service First**
+   - Go to `flask_apps/flask_deepseek_r1`
+   - Edit the deployment scripts to set your Google Cloud project ID.
+   - Run `create_docker_gpu.bat` or use the Dockerfile for deployment.
+   - Note the service URL (e.g., `https://deepseek-flask-gpu-service-xxxxxx.run.app`).
 
-### NER Application Deployment
-
-1. Navigate to the NER application directory:
-```bash
-cd src/apps/ner-app
-```
-
-2. Deploy using the provided script:
-```bash
-deploy_docker.bat
-```
-
-The NER application will be deployed to Google Cloud Run and will automatically connect to the DeepSeek service using the configured URLs:
-- Status URL: `https://deepseek-flask-gpu-service-742894389221.us-central1.run.app/status`
-- Reload URL: `https://deepseek-flask-gpu-service-742894389221.us-central1.run.app/reload`
-- Predict URL: `https://deepseek-flask-gpu-service-742894389221.us-central1.run.app/predict`
+2. **Build and Deploy NER Service**
+   - Go to `flask_apps/flask_ner_app`
+   - Update the NER app configuration to point to the DeepSeek service URL.
+   - Run `deploy.bat` or use the Dockerfile for deployment.
 
 ### Manual Docker Deployment
 
-If you prefer to deploy manually:
+- Build and run each service locally:
+  ```bash
+  docker build -t flask-ner-app ./flask_apps/flask_ner_app
+  docker run -p 5000:5000 flask-ner-app
 
-1. Build the Docker image:
-```bash
-docker build -t nlp-app .
-```
+  docker build -t flask-deepseek-app ./flask_apps/flask_deepseek_r1
+  docker run -p 5001:5000 flask-deepseek-app
+  ```
 
-2. Run the container:
-```bash
-docker run -p 5000:5000 nlp-app
-```
+---
 
-## Training and Testing
+## Usage
 
-The project includes Jupyter notebooks for both training and testing:
+- Access the NER web interface via the deployed URL or `localhost:5000`.
+- The NER app will communicate with the DeepSeek service for advanced inference.
+- Use the Jupyter notebooks for training and testing your models.
 
-- Training notebooks are located in the `src/notebooks/training/` directory
-- Testing notebooks are available in the `src/notebooks/testing/` directory
+---
 
-## Deployment Architecture
+## Customization
 
-The project uses a microservices architecture:
-1. DeepSeek Service: Handles the core model inference with GPU support
-2. NER Service: Provides the NER functionality and interfaces with the DeepSeek service
+- **Project ID:** Edit the deployment scripts (`*.bat`) and `app.yaml` to set your Google Cloud project ID.
+- **Service URLs:** Update the NER app configuration to point to the correct DeepSeek service endpoint after deployment.
 
-Both services are containerized and deployed to Google Cloud Run for scalability and reliability.
+---
+
+## Requirements
+
+- Python 3.8+
+- pip
+- Docker
+- Google Cloud SDK (for cloud deployment)
+- Jupyter Notebook (for running notebooks)
+
+---
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License
+
+---
 
 ## Contributing
 
@@ -171,6 +200,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+---
+
 ## Contact
 
-Your Name - Shanmukha Srinivas CH
+Your Name - your.email@example.com
+
+Project Link: [https://github.com/yourusername/nlp](https://github.com/yourusername/nlp) 

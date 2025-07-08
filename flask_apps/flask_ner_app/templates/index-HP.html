@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agricultural Insights Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-leaf text-green-600 text-2xl mr-2"></i>
+                <a href="#" class="text-xl font-bold text-gray-800 hover:text-green-600 transition">Agro<span class="text-green-600">AI</span></a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-800 hover:text-green-600 font-medium transition">Home</a>
+                <a href="#features" class="text-gray-600 hover:text-green-600 font-medium transition">Features</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-green-600 font-medium transition">How It Works</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition">About Us</a>
+            </div>
+            <button class="md:hidden focus:outline-none">
+                <i class="fas fa-bars text-gray-600 text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20 md:py-32">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Unlock Agricultural Intelligence</h1>
+                <h2 class="text-xl md:text-2xl font-light mb-8">From Text Analysis to Predictive Farming with AI</h2>
+                <p class="text-lg mb-8 opacity-90">Leverage state-of-the-art AI tools to extract insights from agricultural texts and optimize farming strategies with precision predictions.</p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="{{ url_for('analyze') }}" class="bg-white text-green-700 hover:bg-gray-100 font-semibold py-3 px-6 rounded-lg shadow-lg text-center transition duration-300 transform hover:scale-105">
+                        Analyze Agricultural Text
+                    </a>
+                    <a href="{{ url_for('predict') }}" class="bg-transparent border-2 border-white hover:bg-white hover:text-green-700 font-semibold py-3 px-6 rounded-lg shadow-lg text-center transition duration-300 transform hover:scale-105">
+                        Predict with Parameters
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <img src="https://th.bing.com/th/id/OIP.w_VTqcYSttjre0rA7GkwLwHaFj?r=0&o=7rm=3&rs=1&pid=ImgDetMain" 
+                     alt="AI Agriculture" 
+                     class="rounded-xl shadow-2xl w-full max-w-lg border-4 border-white border-opacity-20">
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Badges -->
+    <div class="bg-gray-100 py-8">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap justify-center gap-6">
+                <div class="flex items-center bg-white rounded-lg px-6 py-3 shadow">
+                    <i class="fas fa-brain text-blue-500 mr-2"></i>
+                    <span class="font-medium">AI-Powered Analysis</span>
+                </div>
+                <div class="flex items-center bg-white rounded-lg px-6 py-3 shadow">
+                    <i class="fas fa-seedling text-green-500 mr-2"></i>
+                    <span class="font-medium">Crop Recommendations</span>
+                </div>
+                <div class="flex items-center bg-white rounded-lg px-6 py-3 shadow">
+                    <i class="fas fa-chart-line text-purple-500 mr-2"></i>
+                    <span class="font-medium">Data Visualization</span>
+                </div>
+                <div class="flex items-center bg-white rounded-lg px-6 py-3 shadow">
+                    <i class="fas fa-flask text-yellow-500 mr-2"></i>
+                    <span class="font-medium">Scientific Approach</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What We Offer Section -->
+    <section id="features" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Discover Our Intelligent Tools</h2>
+                <div class="w-24 h-1 bg-green-500 mx-auto"></div>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-4">A suite of advanced AI tools designed to transform your agricultural decision-making process.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Feature 1: Text Analysis -->
+                <div id="text-analysis" class="bg-gray-50 p-8 rounded-xl border border-gray-200 transition-all duration-300 card-hover">
+                    <div class="flex items-center mb-6">
+                        <div class="mr-4">
+                            <i class="fas fa-file-alt feature-icon"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">AI-Powered Text Analysis</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">Our system uses cutting-edge Natural Language Processing (NER) and DeepSeek technology to analyze agricultural texts, extracting key entities and relationships instantly.</p>
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">Capabilities:</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Identify crops, soil types, pests, diseases, and treatments</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Process research papers, reports, and field notes</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <span>Generate structured insights from unstructured text</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">Benefits:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Quick analysis</span>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Efficient data extraction</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Time savings</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('analyze') }}" class="inline-block mt-8 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">Try Text Analyzer →</a>
+                </div>
+
+                <!-- Feature 2: Predictive Tool -->
+                <div id="predictive-tool" class="bg-gray-50 p-8 rounded-xl border border-gray-200 transition-all duration-300 card-hover">
+                    <div class="flex items-center mb-6">
+                        <div class="mr-4">
+                            <i class="fas fa-chart-pie feature-icon"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">Predictive Crop & Fertilizer Tool</h3>
+                    </div>
+                    <p class="text-gray-600 mb-6">Experiment with different agricultural scenarios by adjusting environmental parameters and receive AI-powered crop suitability and fertilizer recommendations.</p>
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">Parameters you can adjust:</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                <i class="fas fa-temperature-high mr-1"></i> Temperature
+                            </span>
+                            <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                <i class="fas fa-tint mr-1"></i> Humidity
+                            </span>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                <i class="fas fa-water mr-1"></i> Moisture
+                            </span>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                <i class="fas fa-mountain mr-1"></i> Soil Type
+                            </span>
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                <i class="fas fa-atom mr-1"></i> Nitrogen
+                            </span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm flex items-center">
+                                <i class="fas fa-flask mr-1"></i> Phosphorous
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3">Benefits:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Scenario testing</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">Optimized yields</span>
+                            <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Reduced waste</span>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('predict') }}" class="inline-block mt-8 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition">Try Predictor Tool →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Our Platform -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">The Advantage of Integrated AI</h2>
+                <div class="w-24 h-1 bg-green-500 mx-auto"></div>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-4">Our platform combines cutting-edge technologies to deliver comprehensive agricultural intelligence.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-chart-network text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">Holistic Understanding</h3>
+                    <p class="text-gray-600 text-center">Bridge the gap between textual data and predictive modeling with our integrated platform that provides complete insights.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-users-cog text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">Versatile Application</h3>
+                    <p class="text-gray-600 text-center">Valuable for researchers, agricultural advisors, and forward-thinking farmers looking to leverage AI technology.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-lock text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">Reliable Technology</h3>
+                    <p class="text-gray-600 text-center">Powered by state-of-the-art DeepSeek AI models developed specifically for agricultural applications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Get Started in Minutes</h2>
+                <div class="w-24 h-1 bg-green-500 mx-auto"></div>
+                <p class="max-w-2xl mx-auto text-gray-600 mt-4">Simple steps to unlock powerful agricultural intelligence.</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                         alt="Agricultural AI Process" 
+                         class="rounded-xl shadow-lg w-full max-w-md mx-auto">
+                </div>
+                <div class="md:w-1/2 md:pl-12">
+                    <div class="space-y-8">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-bold text-xl">
+                                    1
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Choose Your Tool</h3>
+                                <p class="text-gray-600">Select either the Text Analysis for processing agricultural documents or the Parameter Prediction for scenario modeling.</p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 font-bold text-xl">
+                                    2
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Provide Your Input</h3>
+                                <p class="text-gray-600">Enter agricultural text for analysis or adjust the environmental parameters according to your specific conditions.</p>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600 font-bold text-xl">
+                                    3
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Receive AI Insights</h3>
+                                <p class="text-gray-600">Get instant, accurate results from our advanced AI models to inform your agricultural decisions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-green-700 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Agriculture with AI?</h2>
+            <p class="max-w-2xl mx-auto text-green-100 mb-8">Join hundreds of agricultural professionals leveraging our platform for data-driven decision making.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="{{ url_for('analyze') }}" class="bg-white text-green-700 hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
+                    Start Text Analysis
+                </a>
+                <a href="{{ url_for('predict') }}" class="bg-transparent border-2 border-white hover:bg-green-800 font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">
+                    Try Predictor Tool
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-12 pb-6">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-leaf text-green-400 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold">Agro<span class="text-green-400">AI</span></span>
+                    </div>
+                    <p class="text-gray-400">Advanced AI tools for modern agriculture, helping professionals make data-driven decisions.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#features" class="text-gray-400 hover:text-white transition">Features</a></li>
+                        <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition">How It Works</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Tools</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('analyze') }}" class="text-gray-400 hover:text-white transition">Text Analysis</a></li>
+                        <li><a href="{{ url_for('predict') }}" class="text-gray-400 hover:text-white transition">Predictor Tool</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-gray-400">contact@agroai.example.com</p>
+                        <p class="text-gray-400">+1 (555) 123-4567</p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2023 AgroAI. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-green-600 text-white w-12 h-12 rounded-full shadow-lg hidden items-center justify-center transition-all duration-300 hover:bg-green-700">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+                backToTopButton.classList.add('flex');
+            } else {
+                backToTopButton.classList.add('hidden');
+                backToTopButton.classList.remove('flex');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

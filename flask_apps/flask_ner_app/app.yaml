@@ -1,0 +1,44 @@
+runtime: custom  # For Docker-based deployments
+env: flex
+service: ner-service # Or your preferred service name
+
+# Manual scaling allows you to control the number of instances.
+# Start with 1 to manage costs on free trial.
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: 1 # Number of vCPUs
+  memory_gb: 16.0 # Request RAM. Adjust as needed (e.g., 4.0)
+  disk_size_gb: 20 # Request disk size for the VM. Default is 10GB.
+
+# If your Dockerfile exposes a port other than 8080, specify it here.
+# Otherwise, App Engine Flex expects 8080.
+# network:
+#   forwarded_ports:
+#     - "8080:8080" # host:container, if your Gunicorn listens on 8080
+
+# Health checks - good practice
+health_check:
+  enable_health_check: True
+  check_interval_sec: 30
+  timeout_sec: 4
+  unhealthy_threshold: 2
+  healthy_threshold: 2
+liveness_check:
+  path: "/" # A simple path that should return 200 OK quickly
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 1
+readiness_check:
+  path: "/" # A path that indicates your app is ready to serve traffic
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 1
+  app_start_timeout_sec: 600 # Give more time for model loading on startup
+
+# You can set environment variables here if needed
+# env_variables:
+#   MY_ENV_VAR: "value"
