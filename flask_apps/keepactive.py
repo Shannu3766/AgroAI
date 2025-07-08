@@ -28,6 +28,7 @@ def monitor():
         if status == "unloaded":
             print("Model not loaded. Triggering reload...")
             reload_model()
+            time.sleep(30)
         elif status == "ready":
             print("Model is ready.")
 

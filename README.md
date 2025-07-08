@@ -1,3 +1,24 @@
+<!-- Showcase -->
+<p align="center">
+  <img src="ner.png" alt="NER Example" width="350"/>
+  <img src="predict.png" alt="Prediction Example" width="350"/>
+</p>
+
+<p align="center">
+  <b>Demo Video:</b><br/>
+  <a href="AI%20Agricultural%20Insights%20Platform.mp4">AI Agricultural Insights Platform.mp4</a>
+</p>
+
+<!-- HTML5 video tag for local viewing (may not work on GitHub) -->
+<p align="center">
+  <video width="600" controls>
+    <source src="AI Agricultural Insights Platform.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <br/>
+  <i>Note: Video playback may not work on GitHub, but will work if you open this README locally in a browser.</i>
+</p>
+
 # Smart Agriculture NLP Suite
 
 This repository contains a suite of applications and notebooks for advanced Natural Language Processing (NLP) in the agriculture domain, including Named Entity Recognition (NER), DeepSeek model integration, and web-based deployment using Flask and Docker.
