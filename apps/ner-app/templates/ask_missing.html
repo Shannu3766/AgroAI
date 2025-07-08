@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide Missing Parameters</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> <!-- Assuming you might add a style.css -->
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        form { background-color: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-bottom: 5px; font-weight: bold;}
+        input[type="text"], input[type="number"] { width: calc(100% - 22px); padding: 10px; margin-bottom: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="submit"] { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top:15px;}
+        input[type="submit"]:hover { background-color: #218838; }
+        ul { list-style-type: none; padding: 0; }
+        li { background-color: #e9e9e9; margin-bottom: 8px; padding: 10px; border-radius: 4px; }
+        .error { color: red; font-size: 0.9em; margin-bottom: 10px; }
+        .parameter-group { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <h1>Provide Missing Information</h1>
+
+    {% if extracted_params %}
+    <h2>Extracted Parameters:</h2>
+    <ul>
+        {% for key, value in extracted_params.items() %}
+        <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2>Missing Parameters:</h2>
+    <form method="POST" action="{{ url_for('submit_missing') }}">
+        {% for name, info in missing_params.items() %}
+        <div class="parameter-group">
+            <label for="{{ name }}">{{ info.prompt }}</label>
+            {% set input_type = 'text' %}
+            {% if info.type == 'float' or info.type == 'int' %}
+                {% set input_type = 'number' %}
+            {% endif %}
+            <input 
+                type="{{ input_type }}" 
+                id="{{ name }}" 
+                name="{{ name }}" 
+                {% if input_type == 'number' and info.type == 'float' %}step="any"{% endif %}
+                {% if input_type == 'number' and info.type == 'int' %}step="1"{% endif %}
+                value="{{ form_values[name] if form_values and name in form_values else '' }}"
+                required
+            >
+            {% if errors and name in errors %}
+                <p class="error">{{ errors[name] }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <input type="submit" value="Submit Missing Info">
+    </form>
+</body>
+</html>

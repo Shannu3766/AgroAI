@@ -1,0 +1,11 @@
+unsloth
+torch --index-url https://download.pytorch.org/whl/cpu
+transformers
+peft
+accelerate
+sentencepiece
+gunicorn
+flask
+gunicorn
+bitsandbytes
+unsloth_zoo
